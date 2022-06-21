@@ -54,8 +54,30 @@ class DatabaseController {
       console.log("DB Error", err);
     }
   }
+
+  async deleteProject(name: string) {
+    const deleteData = {
+      ...this.DATA,
+      filter: {
+        name: name,
+      },
+    };
+
+    this.OPTIONS.body = JSON.stringify(deleteData);
+
+    try {
+      const request = await fetch(`${this.BASE_URI}/deleteOne`, this.OPTIONS);
+
+      const response = await request.json();
+
+      console.log("DB Response", response);
+    } catch (err) {
+      console.log("DB Error", err);
+    }
+  }
 }
 
 const Database = new DatabaseController();
 
-Database.insertProject("myThirdProject", "Create a task app");
+// Database.insertProject("myThirdProject", "Create a task app");
+// Database.deleteProject("myThirdProject");
