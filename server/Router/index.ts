@@ -12,6 +12,17 @@ export default class Router {
     this.requestData = undefined;
   }
 
+  async init(): Promise<Response> {
+    await this.parseRequestData();
+
+    if (!this.requestData) {
+      console.log("Request data not found");
+      return new Response("Request data not found");
+    } else {
+      return this.route();
+    }
+  }
+
   async parseRequestData(): Promise<RequestData | undefined> {
     const contentType: string | null = this.req.headers.get("content-type");
 
@@ -32,25 +43,21 @@ export default class Router {
     }
   }
 
-  async route() {
-    await this.parseRequestData();
-
-    if (!this.requestData) {
-      console.log("Request data not found");
-      return new Response("Request data not found");
-    }
-
+  route() {
     if (this.pathname === "/slack/events") {
-      handleSlackEvent(this.requestData as SlackEventAPI);
+      return handleSlackEvent(this.requestData as SlackEventAPI);
     } else if (this.pathname === "/slack/interact") {
-      handleSlackInteraction(this.requestData as FormData);
+      return handleSlackInteraction(this.requestData as FormData);
     } else if (this.pathname === "/slack/command") {
-      handleSlackCommand(this.requestData as FormData);
+      return handleSlackCommand(this.requestData as FormData);
+    } else {
+      return new Response("Request URL unknown");
     }
   }
 
   //Will delete soon
-  verify() {
+  async verify() {
+    await this.parseRequestData();
     //@ts-ignore: One off case
     console.log("Challenge", this.requestData?.challenge);
     //@ts-ignore: One off case

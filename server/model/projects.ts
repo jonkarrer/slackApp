@@ -1,5 +1,5 @@
-import { config } from "https://deno.land/x/dotenv/mod.ts";
-const { DB_KEY, APP_ID } = config();
+import { config } from "../deno_modules/deps.ts";
+const { DB_KEY, APP_ID } = await config();
 
 interface IRequestOptions {
   method: string;

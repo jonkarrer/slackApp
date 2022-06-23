@@ -1,7 +1,5 @@
-import "https://deno.land/x/dotenv@v2.0.0/load.ts";
-import { WebClient } from "https://deno.land/x/slack_web_api@6.7.1/mod.js";
+import Client from "../utils/slackWebClient.ts";
 
-const client = new WebClient(Deno.env.get("SLACK_BOT_TOKEN"));
 const channelId = "U02U8DH9F37";
 const myId = "U02U8DH9F37";
 
@@ -19,7 +17,7 @@ export default async function handleSlackCommand(command: FormData) {
   try {
     // Call the chat.postEphemeral method using the WebClient
     // https://api.slack.com/methods/chat.postEphemeral
-    await client.chat.postEphemeral({
+    await Client.chat.postEphemeral({
       channel: channelId,
       user: myId,
       // Starts the layout of the ephimeral.
@@ -56,7 +54,8 @@ export default async function handleSlackCommand(command: FormData) {
       text: "Message",
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    return new Response(error);
   }
 
   return new Response("Slack Command Handled");

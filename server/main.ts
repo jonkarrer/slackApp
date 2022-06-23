@@ -1,12 +1,11 @@
-import { serve } from "https://deno.land/std@0.141.0/http/server.ts";
+import { serve } from "./deno_modules/deps.ts";
 import Router from "./Router/index.ts";
 
 async function handler(req: Request): Promise<Response> {
-  await new Router(req).route();
+  const response = await new Router(req).init();
+  return response;
   ///use this to pass the challnege from slack and start testing.
-  // return new Router(req).verify();
-
-  return new Response("End Response");
+  // return await new Router(req).verify();
 }
 
 serve(handler);

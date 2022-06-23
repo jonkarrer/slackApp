@@ -1,14 +1,11 @@
 import { SlackEventAPI } from "../types/Router.ts";
-import "https://deno.land/x/dotenv@v2.0.0/load.ts";
-import { WebClient } from "https://deno.land/x/slack_web_api@6.7.1/mod.js";
-
-const client = new WebClient(Deno.env.get("SLACK_BOT_TOKEN"));
+import Client from "../utils/slackWebClient.ts";
 
 export default async function handleSlackEvent(event: SlackEventAPI) {
   console.log("Event", event);
   try {
     /* view.publish is the method that your app uses to push a view to the Home tab */
-    await client.views.publish({
+    await Client.views.publish({
       /* the user that opened your app's app home */
       user_id: channelId,
 
@@ -54,6 +51,7 @@ export default async function handleSlackEvent(event: SlackEventAPI) {
     });
   } catch (error) {
     console.error(error);
+    return new Response(error);
   }
   return new Response("Slack Event Handled");
 }
@@ -61,10 +59,10 @@ export default async function handleSlackEvent(event: SlackEventAPI) {
 const channelId = "U02U8DH9F37";
 
 // ! Sample from Bolt framework
-// app.event("app_home_opened", async ({ event, client, context }) => {
+// app.event("app_home_opened", async ({ event, Client, context }) => {
 //   try {
 //     /* view.publish is the method that your app uses to push a view to the Home tab */
-//     const result = await client.views.publish({
+//     const result = await Client.views.publish({
 //       /* the user that opened your app's app home */
 //       user_id: event.user,
 
