@@ -23,36 +23,36 @@ export default class Router {
     }
   }
 
-  async parseRequestData(): Promise<RequestData | undefined> {
+  async parseRequestData(): Promise<RequestData | void> {
     const contentType: string | null = this.req.headers.get("content-type");
 
     if (!contentType) {
-      return undefined;
+      return;
     }
-
     try {
-      if (contentType === "application/json")
+      if (contentType === "application/json") {
         this.requestData = await this.req.json();
-      if (contentType === "application/x-www-form-urlencoded")
+      } else if (contentType === "application/x-www-form-urlencoded") {
         this.requestData = await this.req.formData();
-      if (contentType === "text/plain")
+      } else if (contentType === "text/plain") {
         this.requestData = await this.req.text();
+      } else {
+        console.log("Content type unkown");
+      }
     } catch (err) {
       console.log("parseDataFromRequest => Error:", err);
-      return;
     }
   }
 
   route() {
-    if (this.pathname === "/slack/events") {
+    if (this.pathname === "/slack/events")
       return handleSlackEvent(this.requestData as SlackEventAPI);
-    } else if (this.pathname === "/slack/interact") {
+    if (this.pathname === "/slack/interact")
       return handleSlackInteraction(this.requestData as FormData);
-    } else if (this.pathname === "/slack/command") {
+    if (this.pathname === "/slack/command")
       return handleSlackCommand(this.requestData as FormData);
-    } else {
-      return new Response("Request URL unknown");
-    }
+
+    return new Response("Request URL unknown");
   }
 
   //Will delete soon

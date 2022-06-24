@@ -1,6 +1,7 @@
 import { serve } from "./deno_modules/deps.ts";
-import Router from "./Router/index.ts";
+import Router from "./router/index.ts";
 
+// TODO make a SSL Certificate
 async function handler(req: Request): Promise<Response> {
   const response = await new Router(req).init();
   return response;
